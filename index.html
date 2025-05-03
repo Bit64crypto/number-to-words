@@ -2,123 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Crypbit Number-to-Words Pad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Root color palette */
     :root {
-      --bg: #f5f7fa;
-      --card-bg: #ffffff;
-      --display-bg: #eef1f5;
-      --words-bg: #f9fafb;
-      --text-primary: #1f2937;
-      --text-secondary: #4b5563;
-      --accent: #0d9488;
-      --btn-bg: #ffffff;
-      --btn-border: #d1d5db;
-      --btn-hover-bg: #e0f2f1;
+      --bg1: #0a0a0a;
+      --bg2: #141414;
+      --card-bg: rgba(30,30,30,0.85);
+      --text: #e0e0e0;
+      --accent: #00e5ff;
       --radius: 12px;
-      --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
-    /* Base reset */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
       height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: var(--bg);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      color: var(--text-primary);
+      background: linear-gradient(120deg, var(--bg1), var(--bg2));
+      background-size: 200% 200%;
+      animation: bgAnim 12s ease infinite;
+      font-family: 'Roboto', sans-serif;
+      color: var(--text);
+      overflow: hidden;
     }
-    /* Container */
-    .calculator-container {
+    @keyframes bgAnim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+      margin-bottom: 20px;
+      animation: neonFlicker 3s infinite;
+    }
+    @keyframes neonFlicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent); }
+      20%, 24%, 55% { text-shadow: none; }
+    }
+    .calculator {
       background: var(--card-bg);
       border-radius: var(--radius);
-      box-shadow: var(--shadow-soft);
-      padding: 32px;
-      width: 90%;
-      max-width: 380px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      box-shadow: var(--shadow), 0 0 20px rgba(0,229,255,0.3);
+      padding: 24px;
+      width: 320px;
+      backdrop-filter: blur(6px);
+      transition: transform 0.3s;
     }
-    /* Title */
-    .title {
-      font-size: 1.875rem;
-      font-weight: 600;
-      text-align: center;
-      color: var(--accent);
-    }
-    /* Display */
-    .display {
-      background: var(--display-bg);
+    .calculator:hover { transform: scale(1.02); }
+    .display, .words {
+      width:100%;
+      min-height:2.8em;
+      margin-bottom:16px;
+      padding:14px;
       border-radius: var(--radius);
-      padding: 16px;
-      font-size: 2rem;
-      font-weight: 700;
-      text-align: right;
-      color: var(--text-primary);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      white-space: nowrap;
+      background: rgba(43,43,43,0.9);
+      color: var(--text);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing:1px;
     }
-    .words {
-      background: var(--words-bg);
-      border-radius: var(--radius);
-      padding: 12px;
-      font-size: 1rem;
-      color: var(--text-secondary);
-      text-align: center;
-      font-style: italic;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    }
-    /* Keypad grid */
-    .keys {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
+    .display { font-size:1.6em; }
+    .words { font-size:1em; color: #aaa; font-family: 'Roboto', sans-serif; }
+    .keys { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .keys button {
-      background: var(--btn-bg);
-      border: 1px solid var(--btn-border);
+      padding:18px 0;
+      font-size:1.3em;
+      font-family: 'Orbitron', sans-serif;
+      background: rgba(46,46,46,0.9);
+      color: var(--text);
+      border:none;
       border-radius: var(--radius);
-      padding: 18px 0;
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: var(--text-primary);
-      box-shadow: var(--shadow-soft);
-      transition: background 0.2s, transform 0.1s, border-color 0.2s;
-      cursor: pointer;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3), var(--shadow);
+      cursor:pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.1s;
     }
-    .keys button:hover {
-      background: var(--btn-hover-bg);
-      border-color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .keys button:active {
-      background: var(--btn-bg);
-      transform: translateY(0);
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .wide { grid-column: span 2; }
-    /* Responsive text scaling */
-    @media (max-width: 400px) {
-      .title { font-size: 1.5rem; }
-      .display { font-size: 1.75rem; }
-      .keys button { font-size: 1.1rem; padding: 16px 0; }
-    }
+    .keys button:hover { background: rgba(46,46,46,1); box-shadow: 0 0 12px var(--accent), inset 0 -4px 0 rgba(0,0,0,0.3); }
+    .keys button:active { background: rgba(30,30,30,1); transform: scale(0.97); box-shadow: inset 0 4px 8px rgba(0,0,0,0.4); }
+    .keys .wide { grid-column: span 2; }
   </style>
 </head>
 <body>
-  <div class="calculator-container">
-    <div class="title">Crypbit</div>
-    <div id="display" class="display">0</div>
-    <div id="words" class="words">zero</div>
+  <h1 class="title">Crypbit</h1>
+  <div class="calculator">
+    <div id="display" class="display"></div>
+    <div id="words" class="words"></div>
     <div class="keys">
       <button data-num="1">1</button>
       <button data-num="2">2</button>
@@ -129,11 +103,35 @@
       <button data-num="7">7</button>
       <button data-num="8">8</button>
       <button data-num="9">9</button>
-      <button data-num="clear" class="wide">AC</button>
+      <button data-num="clear" class="wide">C</button>
       <button data-num="0">0</button>
-      <button data-num="back">⌫</button>
+      <button data-num="back">←</button>
     </div>
   </div>
-  <!-- Core JS functionality unchanged -->
+  <script>
+    // Helper: format a numeric string with commas
+    function formatWithCommas(str) {
+      return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    function numberToWords(num) {
+      if (num === 0) return 'zero';
+      const ones=['','one','two','three','four','five','six','seven','eight','nine'];
+      const teens=['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+      const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+      const scales=['','thousand','million','billion'];
+      let words=''; let scale=0;
+      while(num>0){let chunk=num%1000;if(chunk){let w='';const h=Math.floor(chunk/100),r=chunk%100;if(h)w+=ones[h]+' hundred';if(r){if(w)w+=' ';if(r<10)w+=ones[r];else if(r<20)w+=teens[r-10];else{w+=tens[Math.floor(r/10)];if(r%10)w+='-'+ones[r%10];}}words=w+(scales[scale]?' '+scales[scale]:'')+(words?' '+words:'');}num=Math.floor(num/1000);scale++;}return words;}
+    let raw=''; const displayEl=document.getElementById('display'), wordsEl=document.getElementById('words');
+    document.querySelector('.keys').addEventListener('click', e => {
+      if (!e.target.matches('button')) return;
+      const key = e.target.dataset.num;
+      if (key === 'clear') { raw = ''; }
+      else if (key === 'back') { raw = raw.slice(0, -1); }
+      else { raw += key; }
+      displayEl.textContent = raw ? formatWithCommas(raw) : '';
+      wordsEl.textContent = raw ? numberToWords(parseInt(raw, 10)) : '';
+    });
+  </script>
 </body>
 </html>
+
