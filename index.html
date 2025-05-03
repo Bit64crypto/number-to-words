@@ -2,101 +2,151 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Prevent mobile zooming on double-tap -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Number to Words (English)</title>
+  <title>Number-to-Words Pad</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+      background: #f0f0f0;
+    }
+    .calculator {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 20px;
-      max-width: 400px;
-      margin: auto;
+      width: 260px;
     }
-    input, button {
-      font-size: 18px;
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
+    .display, .words {
+      min-height: 2em;
+      margin-bottom: 12px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fafafa;
+      word-wrap: break-word;
     }
-    #output {
-      margin-top: 20px;
-      font-weight: bold;
+    .words {
+      font-size: 0.9em;
+      color: #555;
+    }
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .keys button {
+      font-size: 1.2em;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      background: #eee;
+      cursor: pointer;
+      user-select: none;
+    }
+    .keys button:active {
+      background: #ddd;
+    }
+    .keys .wide {
+      grid-column: span 2;
     }
   </style>
 </head>
 <body>
-  <h2>Convert Number to Words (English)</h2>
-  <input type="number" id="numberInput" placeholder="Enter a number" />
-  <button onclick="convertToWords()">Convert</button>
-  <button onclick="clearFields()">Clear</button>
-  <p id="output"></p>
+  <div class="calculator">
+    <div id="display" class="display"></div>
+    <div id="words" class="words"></div>
+    <div class="keys">
+      <!-- number buttons -->
+      <button data-num="1">1</button>
+      <button data-num="2">2</button>
+      <button data-num="3">3</button>
+      <button data-num="4">4</button>
+      <button data-num="5">5</button>
+      <button data-num="6">6</button>
+      <button data-num="7">7</button>
+      <button data-num="8">8</button>
+      <button data-num="9">9</button>
+      <!-- clear and zero -->
+      <button data-num="clear">C</button>
+      <button data-num="0">0</button>
+      <button data-num="back">←</button>
+    </div>
+  </div>
 
   <script>
-    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    const thousands = ["", "Thousand", "Million", "Billion"];
-
-    function convertToWords() {
-      const num = parseInt(document.getElementById("numberInput").value, 10);
-      const output = document.getElementById("output");
-
-      if (isNaN(num)) {
-        output.innerText = "Please enter a valid number.";
-        return;
-      }
-      if (num === 0) {
-        output.innerText = "Zero";
-        return;
-      }
-
-      output.innerText = numberToWords(num);
-    }
-
-    function clearFields() {
-      document.getElementById("numberInput").value = "";
-      document.getElementById("output").innerText = "";
-    }
-
+    // Converts an integer >=0 to English words
     function numberToWords(num) {
-      if (num === 0) return "Zero";
+      if (num === 0) return 'zero';
+      const ones = ['', 'one','two','three','four','five','six','seven','eight','nine'];
+      const teens = ['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+      const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+      const scales = ['', 'thousand', 'million', 'billion'];
+      let words = '';
 
-      let result = "";
-      let chunkCount = 0;
-
+      let scaleIdx = 0;
       while (num > 0) {
-        const chunk = num % 1000;
-        if (chunk !== 0) {
-          result = chunkToWords(chunk) + " " + thousands[chunkCount] + " " + result;
+        let chunk = num % 1000;
+        if (chunk) {
+          let chunkWords = '';
+          const hundred = Math.floor(chunk / 100);
+          const rem = chunk % 100;
+          if (hundred) {
+            chunkWords += ones[hundred] + ' hundred';
+          }
+          if (rem) {
+            if (chunkWords) chunkWords += ' ';
+            if (rem < 10)       chunkWords += ones[rem];
+            else if (rem < 20)  chunkWords += teens[rem - 10];
+            else {
+              chunkWords += tens[Math.floor(rem / 10)];
+              if (rem % 10) chunkWords += '-' + ones[rem % 10];
+            }
+          }
+          words = chunkWords
+                + (scales[scaleIdx] ? ' ' + scales[scaleIdx] : '')
+                + (words ? ' ' + words : '');
         }
         num = Math.floor(num / 1000);
-        chunkCount++;
+        scaleIdx++;
       }
-
-      return result.trim();
+      return words;
     }
 
-    function chunkToWords(num) {
-      let str = "";
+    const displayEl = document.getElementById('display');
+    const wordsEl   = document.getElementById('words');
 
-      if (num >= 100) {
-        str += ones[Math.floor(num / 100)] + " Hundred ";
-        num %= 100;
+    document.querySelector('.keys').addEventListener('click', e => {
+      if (!e.target.matches('button')) return;
+      const key = e.target.dataset.num;
+
+      if (key === 'clear') {
+        displayEl.textContent = '';
+        wordsEl.textContent = '';
+        return;
+      }
+      if (key === 'back') {
+        displayEl.textContent = displayEl.textContent.slice(0, -1);
+      } else {
+        displayEl.textContent += key;
       }
 
-      if (num >= 20) {
-        str += tens[Math.floor(num / 10)] + " ";
-        num %= 10;
-      } else if (num >= 10) {
-        str += teens[num - 10] + " ";
-        num = 0;
+      const text = displayEl.textContent;
+      if (text === '') {
+        wordsEl.textContent = '';
+      } else {
+        // parse leading zeros away
+        const n = parseInt(text, 10);
+        wordsEl.textContent = isNaN(n)
+          ? ''
+          : numberToWords(n);
       }
-
-      if (num > 0) {
-        str += ones[num] + " ";
-      }
-
-      return str.trim();
-    }
+    });
   </script>
 </body>
 </html>
