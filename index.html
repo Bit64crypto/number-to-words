@@ -3,86 +3,111 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Number-to-Words Pad</title>
+  <title>Crypbit Number-to-Words Pad</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #121212;
-      --card-bg: #1e1e1e;
-      --display-bg: #2b2b2b;
-      --text-color: #e0e0e0;
-      --accent: #009eff;
-      --button-bg: #2e2e2e;
-      --button-hover: #3a3a3a;
-      --button-active: #444;
-      --radius: 10px;
-      --shadow: 0 4px 20px rgba(0,0,0,0.5);
+      --bg1: #0a0a0a;
+      --bg2: #141414;
+      --card-bg: rgba(30,30,30,0.85);
+      --text: #e0e0e0;
+      --accent: #00e5ff;
+      --radius: 12px;
+      --shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
     }
-    * { box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing: border-box; }
     body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--bg);
-      background: radial-gradient(circle at top left, #181818, #0f0f0f);
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(120deg, var(--bg1), var(--bg2));
+      background-size: 200% 200%;
+      animation: bgAnim 12s ease infinite;
       font-family: 'Roboto', sans-serif;
+      color: var(--text);
+      overflow:hidden;
+    }
+    @keyframes bgAnim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+      margin-bottom: 20px;
+      animation: neonFlicker 3s infinite;
+    }
+    @keyframes neonFlicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+      }
+      20%, 24%, 55% {
+        text-shadow: none;
+      }
     }
     .calculator {
       background: var(--card-bg);
       border-radius: var(--radius);
-      box-shadow: var(--shadow), 0 0 20px rgba(0,158,255,0.3);
-      padding: 20px;
-      width: 300px;
-      transition: transform 0.2s;
+      box-shadow: var(--shadow), 0 0 20px rgba(0,229,255,0.4);
+      padding: 24px;
+      width: 320px;
+      backdrop-filter: blur(6px);
+      transition: transform 0.3s;
     }
-    .calculator:hover { transform: scale(1.02); }
+    .calculator:hover { transform: scale(1.03); }
     .display, .words {
-      width: 100%;
-      min-height: 2.5em;
-      margin-bottom: 15px;
-      padding: 12px;
+      width:100%;
+      min-height:2.8em;
+      margin-bottom:16px;
+      padding:14px;
       border-radius: var(--radius);
-      background: var(--display-bg);
-      color: var(--text-color);
+      background: rgba(43,43,43,0.9);
+      color: var(--text);
       font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
+      letter-spacing:1px;
     }
-    .display { font-size: 1.5em; }
+    .display { font-size:1.6em; }
     .words {
-      font-size: 1em;
-      color: #aaa;
+      font-size:1em;
+      color: #bbb;
       font-family: 'Roboto', sans-serif;
     }
     .keys {
-      display: grid;
+      display:grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
     .keys button {
-      position: relative;
-      padding: 16px 0;
-      font-size: 1.2em;
+      padding:18px 0;
+      font-size:1.3em;
       font-family: 'Orbitron', sans-serif;
-      color: var(--text-color);
-      background: var(--button-bg);
-      border: none;
+      background: rgba(46,46,46,0.9);
+      color: var(--text);
+      border:none;
       border-radius: var(--radius);
-      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), var(--shadow);
-      cursor: pointer;
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3), var(--shadow);
+      cursor:pointer;
       transition: background 0.2s, transform 0.1s, box-shadow 0.1s;
     }
-    .keys button:hover { background: var(--button-hover); }
+    .keys button:hover {
+      background: rgba(46,46,46,1);
+      box-shadow: 0 0 12px var(--accent), inset 0 -4px 0 rgba(0,0,0,0.3);
+    }
     .keys button:active {
-      background: var(--button-active);
-      transform: scale(0.98);
-      box-shadow: inset 0 4px 8px rgba(0,0,0,0.4);
+      background: rgba(30,30,30,1);
+      transform: scale(0.97);
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.5);
     }
     .keys .wide { grid-column: span 2; }
   </style>
 </head>
 <body>
+  <h1 class="title">Crypbit</h1>
   <div class="calculator">
     <div id="display" class="display"></div>
     <div id="words" class="words"></div>
@@ -101,7 +126,6 @@
       <button data-num="back">←</button>
     </div>
   </div>
-
   <script>
     function numberToWords(num) {
       if (num === 0) return 'zero';
@@ -117,31 +141,25 @@
           let chunkWords = '';
           const hundred = Math.floor(chunk / 100);
           const rem = chunk % 100;
-          if (hundred) {
-            chunkWords += ones[hundred] + ' hundred';
-          }
+          if (hundred) chunkWords += ones[hundred] + ' hundred';
           if (rem) {
             if (chunkWords) chunkWords += ' ';
-            if (rem < 10)       chunkWords += ones[rem];
-            else if (rem < 20)  chunkWords += teens[rem - 10];
+            if (rem < 10) chunkWords += ones[rem];
+            else if (rem < 20) chunkWords += teens[rem - 10];
             else {
               chunkWords += tens[Math.floor(rem / 10)];
               if (rem % 10) chunkWords += '-' + ones[rem % 10];
             }
           }
-          words = chunkWords
-                + (scales[scaleIdx] ? ' ' + scales[scaleIdx] : '')
-                + (words ? ' ' + words : '');
+          words = chunkWords + (scales[scaleIdx] ? ' ' + scales[scaleIdx] : '') + (words ? ' ' + words : '');
         }
         num = Math.floor(num / 1000);
         scaleIdx++;
       }
       return words;
     }
-
     const displayEl = document.getElementById('display');
     const wordsEl = document.getElementById('words');
-
     document.querySelector('.keys').addEventListener('click', e => {
       if (!e.target.matches('button')) return;
       const key = e.target.dataset.num;
@@ -150,15 +168,11 @@
         wordsEl.textContent = '';
         return;
       }
-      if (key === 'back') {
-        displayEl.textContent = displayEl.textContent.slice(0, -1);
-      } else {
-        displayEl.textContent += key;
-      }
+      if (key === 'back') displayEl.textContent = displayEl.textContent.slice(0, -1);
+      else displayEl.textContent += key;
       const text = displayEl.textContent;
-      if (!text) {
-        wordsEl.textContent = '';
-      } else {
+      if (!text) wordsEl.textContent = '';
+      else {
         const n = parseInt(text, 10);
         wordsEl.textContent = isNaN(n) ? '' : numberToWords(n);
       }
