@@ -2,59 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Prevent mobile zooming on double-tap -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Number-to-Words Pad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --display-bg: #2b2b2b;
+      --text-color: #e0e0e0;
+      --accent: #009eff;
+      --button-bg: #2e2e2e;
+      --button-hover: #3a3a3a;
+      --button-active: #444;
+      --radius: 10px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    * { box-sizing: border-box; }
     body {
+      margin: 0;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
-      font-family: sans-serif;
-      background: #f0f0f0;
+      background: var(--bg);
+      background: radial-gradient(circle at top left, #181818, #0f0f0f);
+      font-family: 'Roboto', sans-serif;
     }
     .calculator {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow), 0 0 20px rgba(0,158,255,0.3);
       padding: 20px;
-      width: 260px;
+      width: 300px;
+      transition: transform 0.2s;
     }
+    .calculator:hover { transform: scale(1.02); }
     .display, .words {
-      min-height: 2em;
-      margin-bottom: 12px;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fafafa;
-      word-wrap: break-word;
+      width: 100%;
+      min-height: 2.5em;
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: var(--display-bg);
+      color: var(--text-color);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
     }
+    .display { font-size: 1.5em; }
     .words {
-      font-size: 0.9em;
-      color: #555;
+      font-size: 1em;
+      color: #aaa;
+      font-family: 'Roboto', sans-serif;
     }
     .keys {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
     .keys button {
+      position: relative;
+      padding: 16px 0;
       font-size: 1.2em;
-      padding: 12px;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--text-color);
+      background: var(--button-bg);
       border: none;
-      border-radius: 4px;
-      background: #eee;
+      border-radius: var(--radius);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,0.2), var(--shadow);
       cursor: pointer;
-      user-select: none;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.1s;
     }
+    .keys button:hover { background: var(--button-hover); }
     .keys button:active {
-      background: #ddd;
+      background: var(--button-active);
+      transform: scale(0.98);
+      box-shadow: inset 0 4px 8px rgba(0,0,0,0.4);
     }
-    .keys .wide {
-      grid-column: span 2;
-    }
+    .keys .wide { grid-column: span 2; }
   </style>
 </head>
 <body>
@@ -62,7 +87,6 @@
     <div id="display" class="display"></div>
     <div id="words" class="words"></div>
     <div class="keys">
-      <!-- number buttons -->
       <button data-num="1">1</button>
       <button data-num="2">2</button>
       <button data-num="3">3</button>
@@ -72,15 +96,13 @@
       <button data-num="7">7</button>
       <button data-num="8">8</button>
       <button data-num="9">9</button>
-      <!-- clear and zero -->
-      <button data-num="clear">C</button>
+      <button data-num="clear" class="wide">C</button>
       <button data-num="0">0</button>
       <button data-num="back">←</button>
     </div>
   </div>
 
   <script>
-    // Converts an integer >=0 to English words
     function numberToWords(num) {
       if (num === 0) return 'zero';
       const ones = ['', 'one','two','three','four','five','six','seven','eight','nine'];
@@ -88,7 +110,6 @@
       const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
       const scales = ['', 'thousand', 'million', 'billion'];
       let words = '';
-
       let scaleIdx = 0;
       while (num > 0) {
         let chunk = num % 1000;
@@ -119,12 +140,11 @@
     }
 
     const displayEl = document.getElementById('display');
-    const wordsEl   = document.getElementById('words');
+    const wordsEl = document.getElementById('words');
 
     document.querySelector('.keys').addEventListener('click', e => {
       if (!e.target.matches('button')) return;
       const key = e.target.dataset.num;
-
       if (key === 'clear') {
         displayEl.textContent = '';
         wordsEl.textContent = '';
@@ -135,16 +155,12 @@
       } else {
         displayEl.textContent += key;
       }
-
       const text = displayEl.textContent;
-      if (text === '') {
+      if (!text) {
         wordsEl.textContent = '';
       } else {
-        // parse leading zeros away
         const n = parseInt(text, 10);
-        wordsEl.textContent = isNaN(n)
-          ? ''
-          : numberToWords(n);
+        wordsEl.textContent = isNaN(n) ? '' : numberToWords(n);
       }
     });
   </script>
