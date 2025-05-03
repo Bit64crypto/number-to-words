@@ -4,144 +4,96 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Crypbit Number-to-Words Pad</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg1: #0a0a0a;
-      --bg2: #141414;
-      --card-bg: rgba(30,30,30,0.7);
-      --num-color: #00e5ff;
-      --word-color: #cccccc;
-      --text: #e0e0e0;
-      --accent: #00e5ff;
-      --radius: 14px;
-      --shadow: 0 6px 40px rgba(0, 0, 0, 0.8);
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing: border-box; }
+    /* Use Apple system fonts */
     body {
-      position: relative;
-      height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(120deg, var(--bg1), var(--bg2));
-      background-size: 200% 200%;
-      animation: bgAnim 12s ease infinite;
-      font-family: 'Roboto', sans-serif;
-      color: var(--text);
-      overflow:hidden;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1c1c1e;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      color: #fff;
     }
-    @keyframes bgAnim {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
-    }
-    .blob {
-      position:absolute;
-      width:400px;
-      height:400px;
-      top:45%; left:50%;
-      background: radial-gradient(circle at 30% 30%, rgba(0,229,255,0.25), transparent 60%);
-      filter: blur(140px);
-      transform: translate(-50%, -50%);
-      animation: blobMove 10s ease-in-out infinite;
-      z-index:0;
-    }
-    @keyframes blobMove {
-      0%,100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-60%, -55%) scale(1.2); }
+    .calculator-container {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+      padding: 32px;
+      width: 360px;
     }
     .title {
-      position: relative;
-      z-index:1;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 3rem;
-      color: var(--accent);
-      text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
+      font-size: 1.75rem;
+      font-weight: 600;
+      text-align: center;
       margin-bottom: 24px;
-      animation: neonFlicker 3s infinite;
-    }
-    @keyframes neonFlicker {
-      0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent); }
-      20%, 24%, 55% { text-shadow: none; }
-    }
-    .calculator {
-      position: relative;
-      z-index:1;
-      background: var(--card-bg);
-      border: 2px solid rgba(0,229,255,0.4);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow), 0 0 30px rgba(0,229,255,0.4);
-      padding: 32px;
-      width: 380px;
-      backdrop-filter: blur(8px);
-      transition: transform 0.4s;
-    }
-    .calculator:hover { transform: scale(1.03) rotate(-0.5deg); }
-    .display, .words {
-      width:100%;
-      min-height:3.2em;
-      margin-bottom:20px;
-      padding:16px;
-      border-radius: var(--radius);
-      background: rgba(43,43,43,0.9);
-      backdrop-filter: blur(4px);
-      overflow-x: auto;
+      color: #0a84ff;
     }
     .display {
-      font-family: 'Orbitron', monospace;
-      font-size:2em;
-      color: var(--num-color);
+      width: 100%;
+      padding: 16px;
+      font-size: 2.25rem;
+      font-weight: 700;
       text-align: right;
-      text-shadow: 0 0 8px var(--num-color);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      border: none;
+      color: #fff;
+      backdrop-filter: blur(10px);
+      margin-bottom: 12px;
+      box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.4);
+      overflow-x: auto;
       white-space: nowrap;
     }
     .words {
-      font-size:1.2em;
-      color: var(--word-color);
-      font-family: 'Roboto', sans-serif;
-      font-style: italic;
-      text-shadow: 0 0 4px rgba(0,229,255,0.2);
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      color: #d0d0d0;
       text-align: center;
-      word-wrap: break-word;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      border: none;
+      backdrop-filter: blur(8px);
+      margin-bottom: 24px;
+      font-style: italic;
+      box-shadow: inset 0 -1px 4px rgba(0, 0, 0, 0.3);
     }
     .keys {
-      display:grid;
+      display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
     .keys button {
-      position: relative;
-      overflow: hidden;
-      padding:24px 0;
-      font-size:1.6em;
-      font-family: 'Orbitron', sans-serif;
-      background: rgba(46,46,46,0.95);
-      color: var(--text);
-      border:none;
-      border-radius: var(--radius);
-      box-shadow: inset 0 -6px 0 rgba(0,0,0,0.3), var(--shadow);
-      cursor:pointer;
-      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+      padding: 20px 0;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: background 0.2s, transform 0.1s;
+      cursor: pointer;
     }
     .keys button:hover {
-      background: rgba(46,46,46,1);
-      box-shadow: 0 0 20px var(--accent), inset 0 -3px 0 rgba(0,0,0,0.3);
-      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
     }
     .keys button:active {
-      background: rgba(30,30,30,1);
-      transform: scale(0.9);
-      box-shadow: inset 0 8px 16px rgba(0,0,0,0.6);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(0);
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.6);
     }
-    .keys .wide { grid-column: span 2; }
+    .wide { grid-column: span 2; }
   </style>
 </head>
 <body>
-  <div class="blob"></div>
-  <h1 class="title">Crypbit</h1>
-  <div class="calculator">
+  <div class="calculator-container">
+    <div class="title">Crypbit</div>
     <div id="display" class="display">0</div>
     <div id="words" class="words">zero</div>
     <div class="keys">
@@ -154,25 +106,28 @@
       <button data-num="7">7</button>
       <button data-num="8">8</button>
       <button data-num="9">9</button>
-      <button data-num="clear" class="wide">C</button>
+      <button data-num="clear" class="wide">AC</button>
       <button data-num="0">0</button>
-      <button data-num="back">←</button>
+      <button data-num="back">⌫</button>
     </div>
   </div>
   <script>
+    // Format digits with commas
     function formatWithCommas(str) {
       return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
+    
+    // Convert number to English words
     function numberToWords(num) {
       if (num === 0) return 'zero';
       const ones = ['', 'one','two','three','four','five','six','seven','eight','nine'];
       const teens = ['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
-      const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+      const tens = ['', '', 'twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
       const scales = ['', 'thousand', 'million', 'billion'];
       let words = '';
       let scale = 0;
       while (num > 0) {
-        const chunk = num % 1000;
+        let chunk = num % 1000;
         if (chunk) {
           let chunkWords = '';
           const h = Math.floor(chunk / 100);
@@ -194,27 +149,36 @@
       }
       return words;
     }
+
     let raw = '';
     const displayEl = document.getElementById('display');
     const wordsEl = document.getElementById('words');
 
     function updateDisplay() {
-      const disp = raw ? formatWithCommas(raw) : '0';
-      displayEl.textContent = disp;
-      const value = parseInt(raw || '0', 10);
-      wordsEl.textContent = numberToWords(value);
+      // If cleared, show default
+      if (!raw) {
+        displayEl.textContent = '0';
+        wordsEl.textContent = 'zero';
+        return;
+      }
+      displayEl.textContent = formatWithCommas(raw);
+      wordsEl.textContent = numberToWords(parseInt(raw, 10));
     }
 
     document.querySelector('.keys').addEventListener('click', e => {
       if (!e.target.matches('button')) return;
       const key = e.target.dataset.num;
-      if (key === 'clear') raw = '';
-      else if (key === 'back') raw = raw.slice(0, -1);
-      else raw += key;
+      if (key === 'clear') {
+        raw = '';
+      } else if (key === 'back') {
+        raw = raw.slice(0, -1);
+      } else {
+        raw += key;
+      }
       updateDisplay();
     });
 
-    // initialize
+    // Initialize display
     updateDisplay();
   </script>
 </body>
