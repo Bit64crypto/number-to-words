@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Number to Words (English)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Convert Number to Words (English)</h2>
+  <input type="number" id="numberInput" placeholder="Enter a number" />
+  <button onclick="convertToWords()">Convert</button>
+  <button onclick="clearFields()">Clear</button>
+  <p id="output"></p>
+
+  <script>
+    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    const thousands = ["", "Thousand", "Million", "Billion"];
+
+    function convertToWords() {
+      const num = parseInt(document.getElementById("numberInput").value, 10);
+      const output = document.getElementById("output");
+
+      if (isNaN(num)) {
+        output.innerText = "Please enter a valid number.";
+        return;
+      }
+      if (num === 0) {
+        output.innerText = "Zero";
+        return;
+      }
+
+      output.innerText = numberToWords(num);
+    }
+
+    function clearFields() {
+      document.getElementById("numberInput").value = "";
+      document.getElementById("output").innerText = "";
+    }
+
+    function numberToWords(num) {
+      if (num === 0) return "Zero";
+
+      let result = "";
+      let chunkCount = 0;
+
+      while (num > 0) {
+        const chunk = num % 1000;
+        if (chunk !== 0) {
+          result = chunkToWords(chunk) + " " + thousands[chunkCount] + " " + result;
+        }
+        num = Math.floor(num / 1000);
+        chunkCount++;
+      }
+
+      return result.trim();
+    }
+
+    function chunkToWords(num) {
+      let str = "";
+
+      if (num >= 100) {
+        str += ones[Math.floor(num / 100)] + " Hundred ";
+        num %= 100;
+      }
+
+      if (num >= 20) {
+        str += tens[Math.floor(num / 10)] + " ";
+        num %= 10;
+      } else if (num >= 10) {
+        str += teens[num - 10] + " ";
+        num = 0;
+      }
+
+      if (num > 0) {
+        str += ones[num] + " ";
+      }
+
+      return str.trim();
+    }
+  </script>
+</body>
+</html>
